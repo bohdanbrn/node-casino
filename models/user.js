@@ -2,11 +2,19 @@
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
-    username: DataTypes.STRING
+    username: {
+      type: DataTypes.STRING,
+      trim: true,
+      allowNull: false
+    }
   });
 
+  /**
+   * Create an association with tables
+   * @param {object} models 
+   */
   User.associate = function(models) {
-    models.User.hasMany(models.UserCasino);
+    User.hasMany(models.UserCasino);
   };
 
   return User;
