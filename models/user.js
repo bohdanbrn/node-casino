@@ -2,19 +2,38 @@
 
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define("User", {
-        username: {
+        name: {
             type: DataTypes.STRING,
             trim: true,
             allowNull: false
+        },
+        money: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+            defaultValue: 0,
+            validate: {
+                min: 0
+            }
+        },
+        role: {
+            type: DataTypes.ENUM("admin", "user"),
+            allowNull: false,
+            defaultValue: "user"
         }
     });
 
     /**
-   * Create an association with tables
-   * @param {object} models 
-   */
-    User.associate = function(models) {
-        User.hasMany(models.UserCasino);
+     * Find User by id
+     * @param {number} id 
+     */
+    User.findById = async (id) => {
+        const user = await User.findOne({
+            where: {
+                id
+            }
+        });
+
+        return user;
     };
 
     return User;

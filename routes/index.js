@@ -1,11 +1,9 @@
-const models  = require("../models");
+const models = require("../models");
 const express = require("express");
-const router  = express.Router();
+const router = express.Router();
 
 router.get("/", function(req, res) {
-    models.User.findAll({
-        include: [ models.Task ]
-    }).then(function(users) {
+    models.User.findAll().then(function(users) {
         res.render("index", {
             title: "Sequelize: Express Example",
             users: users

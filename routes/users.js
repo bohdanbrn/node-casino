@@ -1,42 +1,104 @@
-const models  = require("../models");
+const models = require("../models");
 const express = require("express");
-const router  = express.Router();
+const router = new express.Router();
 
-router.post("/create", function(req, res) {
-    models.User.create({
-        username: req.body.username
-    }).then(function() {
-        res.redirect("/");
-    });
+
+/**
+ * Create new User
+ */
+router.post("", async (req, res) => {
+    try {
+        const user = await models.User.create({
+            name: req.body.name
+        });
+
+        res.status(201).send({
+            success: true,
+            data: {
+                user
+            }
+        });
+    } catch (e) {
+        res.status(500).send({
+            success: false,
+            error: e.message
+        });
+    }
 });
 
-router.get("/:user_id/destroy", function(req, res) {
-    models.User.destroy({
-        where: {
-            id: req.params.user_id
+/**
+ * Get all Users
+ */
+router.get("", async (req, res) => {
+    try {
+        const users = await models.User.findAll();
+
+        res.status(200).send({
+            success: true,
+            data: {
+                users
+            }
+        });
+
+    } catch (e) {
+        res.status(500).send({
+            success: false,
+            error: e.message
+        });
+    }
+});
+
+/**
+ * Get User by id
+ */
+router.get("/:id", async (req, res) => {
+    try {
+        const user = await models.User.findById(req.params.id);
+
+        if (!user) {
+            res.status(404).send({
+                success: false,
+                error: "User is not found!"
+            });
         }
-    }).then(function() {
-        res.redirect("/");
-    });
+
+        res.status(200).send({
+            success: true,
+            data: {
+                user
+            }
+        });
+
+    } catch (e) {
+        res.status(500).send({
+            success: false,
+            error: e.message
+        });
+    }
 });
 
-router.post("/:user_id/tasks/create", function (req, res) {
-    models.Task.create({
-        title: req.body.title,
-        UserId: req.params.user_id
-    }).then(function() {
-        res.redirect("/");
-    });
-});
+/**
+ * Delete User by id
+ */
+router.delete("/:id", async (req, res) => {
+    try {
+        const result = await models.User.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
 
-router.get("/:user_id/tasks/:task_id/destroy", function (req, res) {
-    models.Task.destroy({
-        where: {
-            id: req.params.task_id
-        }
-    }).then(function() {
-        res.redirect("/");
-    });
+        const statusCode = result ? 200 : 404;
+
+        res.status(statusCode).send({
+            success: result
+        });
+    } catch (e) {
+        res.status(500).send({
+            success: false,
+            error: e.message
+        });
+    }
 });
 
 
