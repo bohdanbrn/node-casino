@@ -1,3 +1,5 @@
+"use strict";
+
 const models = require("../models");
 const express = require("express");
 const router = new express.Router();
@@ -20,7 +22,7 @@ router.post("", async (req, res) => {
                 gMachine
             }
         });
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message
@@ -42,7 +44,7 @@ router.get("", async (req, res) => {
             }
         });
 
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message
@@ -71,7 +73,7 @@ router.get("/:id", async (req, res) => {
             }
         });
 
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message
@@ -95,7 +97,7 @@ router.delete("/:id", async (req, res) => {
         res.status(statusCode).send({
             success: result
         });
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message
@@ -127,7 +129,7 @@ router.post("/play/:machineId", async (req, res) => {
                 const maxRate = Math.floor(gMachine.money / 3);
                 throw new Error(`There is not enough money to play. Maximum rate is ${maxRate}`);
             }
-        } catch (e) {
+        } catch(e) {
             res.status(400).send({
                 success: false,
                 error: e.message
@@ -181,11 +183,10 @@ router.post("/play/:machineId", async (req, res) => {
             success: true,
             data: {
                 message: resultMessage,
-                winningAmount: winningAmount,
-                randNumb
+                winningAmount: winningAmount
             }
         });
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message

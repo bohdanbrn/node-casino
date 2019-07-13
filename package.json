@@ -15,13 +15,13 @@
         "cookie-parser": "^1.4.3",
         "debug": "^4.1.1",
         "express": "^4.16.2",
+        "hbs": "^4.0.4",
         "morgan": "^1.7.0",
         "pg": "^7.11.0",
         "pg-hstore": "^2.3.3",
         "pug": "^2.0.0-rc.4",
-        "sequelize": "^5.9.4",
-        "sequelize-cli": "^5.5.0",
-        "serve-favicon": "^2.5.0"
+        "sequelize": "^5.10.0",
+        "sequelize-cli": "^5.5.0"
     },
     "devDependencies": {
         "cross-env": "^5.2.0",

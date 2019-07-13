@@ -1,13 +1,11 @@
-const models = require("../models");
+"use strict";
+
 const express = require("express");
 const router = express.Router();
 
 router.get("/", function(req, res) {
-    models.User.findAll().then(function(users) {
-        res.render("index", {
-            title: "Sequelize: Express Example",
-            users: users
-        });
+    res.render("index", {
+        title: "Sign in casino"
     });
 });
 

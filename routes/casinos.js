@@ -1,3 +1,5 @@
+"use strict";
+
 const models = require("../models");
 const express = require("express");
 const router = new express.Router();
@@ -18,7 +20,7 @@ router.post("", async (req, res) => {
                 casino
             }
         });
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message
@@ -40,7 +42,7 @@ router.get("", async (req, res) => {
             }
         });
 
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message
@@ -69,7 +71,7 @@ router.get("/:id", async (req, res) => {
             }
         });
 
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message
@@ -93,52 +95,13 @@ router.delete("/:id", async (req, res) => {
         res.status(statusCode).send({
             success: result
         });
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message
         });
     }
 });
-
-// /**
-//  * Start play
-//  */
-// router.post("/play/:casinoId/:machineId", async (req, res) => {
-//     try {
-//         const casino = await models.Casino.findById(req.params.casinoId);
-//         const gMachine = await models.GameMachine.findById(req.params.machineId);
-//         const money = req.params.money;
-
-//         try {
-//             if (!casino) {
-//                 throw new Error("Casino is not found!");
-//             } else if (!gMachine) {
-//                 throw new Error("GameMachine is not found!");
-//             }
-//         } catch (e) {
-//             res.status(404).send({
-//                 success: false,
-//                 error: e.message
-//             });
-//         }
-
-//         const casinoMoney = await casino.getMoney();
-//         const gameMachineCount = await casino.getGameMachinesCount();
-
-//         res.status(200).send({
-//             success: true,
-//             casino,
-//             casinoMoney,
-//             gameMachineCount
-//         });
-//     } catch (e) {
-//         res.status(500).send({
-//             success: false,
-//             error: e.message
-//         });
-//     }
-// });
 
 
 module.exports = router;

@@ -1,3 +1,5 @@
+"use strict";
+
 const models = require("../models");
 const express = require("express");
 const router = new express.Router();
@@ -18,7 +20,7 @@ router.post("", async (req, res) => {
                 user
             }
         });
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message
@@ -40,7 +42,7 @@ router.get("", async (req, res) => {
             }
         });
 
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message
@@ -69,7 +71,7 @@ router.get("/:id", async (req, res) => {
             }
         });
 
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message
@@ -93,7 +95,7 @@ router.delete("/:id", async (req, res) => {
         res.status(statusCode).send({
             success: result
         });
-    } catch (e) {
+    } catch(e) {
         res.status(500).send({
             success: false,
             error: e.message
