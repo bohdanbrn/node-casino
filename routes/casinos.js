@@ -37,41 +37,63 @@ router.get("", userAuth, async (req, res) => {
         const casinos = await models.Casino.findAll();
 
         res.status(200).render("casinos", {
+            headTitle: "Casinos",
+            pageTitle: "Casinos",
             casinos: casinos
         });
 
     } catch(e) {
         res.status(500).render("error", {
+            headTitle: "Casinos",
             statusCode: res.statusCode,
-            message: e.message
+            error: e.message
         });
     }
 });
 
 /**
- * Get Casino by id
+ * Get all Game Machines in Casino by id
  */
-router.get("/:id", async (req, res) => {
+router.get("/:id", userAuth, async (req, res) => {
     try {
-        const casino = await models.Casino.findById(req.params.id);
+        const casino = await models.Casino.findOne({
+            where: { id: req.params.id },
+            include: [{
+                model: models.GameMachine,
+            }],
+            order: [
+                [models.GameMachine, "active", "desc"],
+                [models.GameMachine, "money", "desc"]
+            ]
+        });
 
         if (!casino) {
-            res.status(404).send({
+            res.status(404).render("error", {
+                headTitle: "Game Machines",
                 success: false,
                 error: "Casino is not found!"
             });
         }
 
-        res.status(200).send({
+        if (!casino.GameMachines) {
+            res.status(400).render("casino", {
+                headTitle: "Game Machines",
+                success: false,
+                error: "No game machines were found in the casino!"
+            });
+        }
+
+        res.status(200).render("casino", {
+            headTitle: "Game Machines",
+            pageTitle: "Game Machines",
             success: true,
-            data: {
-                casino
-            }
+            casino: casino
         });
 
     } catch(e) {
-        res.status(500).send({
-            success: false,
+        res.status(500).render("error", {
+            headTitle: "Game Machines",
+            statusCode: res.statusCode,
             error: e.message
         });
     }

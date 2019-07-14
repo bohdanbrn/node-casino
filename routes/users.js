@@ -23,7 +23,7 @@ router.post("", async (req, res) => {
     } catch(e) {
         res.status(500).send({
             success: false,
-            error: e.message
+            message: e.message
         });
     }
 });
@@ -45,7 +45,7 @@ router.get("", async (req, res) => {
     } catch(e) {
         res.status(500).send({
             success: false,
-            error: e.message
+            message: e.message
         });
     }
 });
@@ -60,7 +60,7 @@ router.get("/:id", async (req, res) => {
         if (!user) {
             res.status(404).send({
                 success: false,
-                error: "User is not found!"
+                message: "User is not found!"
             });
         }
 
@@ -74,7 +74,7 @@ router.get("/:id", async (req, res) => {
     } catch(e) {
         res.status(500).send({
             success: false,
-            error: e.message
+            message: e.message
         });
     }
 });
@@ -98,7 +98,7 @@ router.delete("/:id", async (req, res) => {
     } catch(e) {
         res.status(500).send({
             success: false,
-            error: e.message
+            message: e.message
         });
     }
 });

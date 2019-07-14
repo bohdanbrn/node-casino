@@ -11,3 +11,17 @@
     background-position: center, center;
     background-size: contain;
 }
+
+.game-machine-icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: url("/img/game-machine.svg") no-repeat;
+    background-position: center, center;
+    background-size: contain;
+}
+
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+}

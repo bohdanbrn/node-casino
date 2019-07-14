@@ -182,7 +182,7 @@ router.post("/play/:machineId", async (req, res) => {
         res.status(200).send({
             success: true,
             data: {
-                message: resultMessage,
+                errorMessage: resultMessage,
                 winningAmount: winningAmount
             }
         });

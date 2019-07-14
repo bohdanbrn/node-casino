@@ -16,6 +16,14 @@ const app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
+// add additional method for checking the equality of two variables
+hbs.registerHelper("if_eq", function(a, b, opts) {
+    if (a == b) {
+        return opts.fn(this);
+    } else {
+        return opts.inverse(this);
+    }
+});
 app.set("view engine", "hbs");
 hbs.registerPartials(path.join(__dirname + "/views"));
 
@@ -46,8 +54,8 @@ app.use(function(err, req, res, next) {
     res.status(err.statusCode || 500);
     res.render("error", {
         statusCode: res.statusCode,
-        message: err.message,
-        error: (app.get("env") === "development") ? err : {}
+        error: err.message,
+        errorDev: (app.get("env") === "development") ? err : {}
     });
 });
 
