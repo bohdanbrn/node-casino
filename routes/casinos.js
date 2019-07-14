@@ -1,5 +1,6 @@
 "use strict";
 
+const userAuth = require("../middleware/user-auth.js");
 const models = require("../models");
 const express = require("express");
 const router = new express.Router();
@@ -31,21 +32,18 @@ router.post("", async (req, res) => {
 /**
  * Get all Casinos
  */
-router.get("", async (req, res) => {
+router.get("", userAuth, async (req, res) => {
     try {
         const casinos = await models.Casino.findAll();
 
-        res.status(200).send({
-            success: true,
-            data: {
-                casinos
-            }
+        res.status(200).render("casinos", {
+            casinos: casinos
         });
 
     } catch(e) {
-        res.status(500).send({
-            success: false,
-            error: e.message
+        res.status(500).render("error", {
+            statusCode: res.statusCode,
+            message: e.message
         });
     }
 });
