@@ -10,6 +10,11 @@ const app = require("../app");
 const debug = require("debug")("express-sequelize");
 const http = require("http");
 const models = require("../models");
+const passport = require("passport");
+
+// TODO (maybe move to app.js)
+// load passport strategies
+require("../config/passport.js")(passport, models.User);
 
 /**
  * Get port from environment and store in Express.

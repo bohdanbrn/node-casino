@@ -7,6 +7,14 @@ module.exports = (sequelize, DataTypes) => {
             trim: true,
             allowNull: false
         },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            trim: true,
+            validate: {
+                notEmpty: true
+            }
+        },
         money: {
             type: DataTypes.FLOAT,
             allowNull: false,

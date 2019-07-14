@@ -4,11 +4,13 @@ module.exports = {
         password: "postgres",
         database: "node-casino",
         dialect: "postgres",
-        storage: "./db.development.postgres"
+        storage: "./db.development.postgres",
+        secret_key: "devSecretKey"
     },
     test: {
         dialect: "postgres",
-        storage: ":memory:"
+        storage: ":memory:",
+        secret_key: "testSecretKey"
     },
     production: {
         username: process.env.DB_USERNAME,
@@ -16,6 +18,7 @@ module.exports = {
         database: process.env.DB_NAME,
         host: process.env.DB_HOSTNAME,
         dialect: "postgres",
-        use_env_variable: "DATABASE_URL"
+        use_env_variable: "DATABASE_URL",
+        secret_key: process.env.SECRET_KEY
     }
 };

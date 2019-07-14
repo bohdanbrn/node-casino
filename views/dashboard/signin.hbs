@@ -1,0 +1,27 @@
+{{> partials/header }}
+
+<div class="row mt-5">
+    <div class="col-md-6 m-auto">
+        <h1 class="text-center mb-3"><i class="fas fa-sign-in-alt"></i> {{pageTitle}}</h1>
+        <div class="card card-body">
+            {{> partials/alertMessages}}
+            <form action="/dashboard/signin" method="POST">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="name" id="name" name="name" class="form-control" placeholder="Enter your name" />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control"
+                        placeholder="Enter Password" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            </form>
+            <p class="lead mt-4">
+                No Account? <a href="/dashboard/signup">Sign Up</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+{{> partials/footer}}
