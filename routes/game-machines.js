@@ -62,7 +62,7 @@ router.get("/:id", async (req, res) => {
         if (!gMachine) {
             res.status(404).send({
                 success: false,
-                error: "GameMachine is not found!"
+                error: "Game machine is not found!"
             });
         }
 

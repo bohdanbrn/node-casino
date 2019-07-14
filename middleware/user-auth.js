@@ -39,7 +39,7 @@ const userAuth = async(req, res, next) => {
     } catch(e) {
         res.status(401).render("error", {
             statusCode: res.statusCode,
-            message: e.message
+            error: e.message
         });
     }
 };

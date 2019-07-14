@@ -41,10 +41,6 @@ module.exports = (sequelize, DataTypes) => {
             }
         });
 
-        if (!gMachine) {
-            throw new Error("Game machine is not found!");
-        }
-
         return gMachine;
     };
 

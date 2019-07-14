@@ -62,37 +62,84 @@ router.get("/:id", userAuth, async (req, res) => {
                 model: models.GameMachine,
             }],
             order: [
-                [models.GameMachine, "active", "desc"],
+                [models.GameMachine, "active", "asc"],
                 [models.GameMachine, "money", "desc"]
             ]
         });
 
+        // check if casino exist
         if (!casino) {
-            res.status(404).render("error", {
-                headTitle: "Game Machines",
-                success: false,
+            return res.status(404).render("error", {
+                statusCode: res.statusCode,
+                headTitle: "Casino is not found!",
                 error: "Casino is not found!"
             });
         }
 
-        if (!casino.GameMachines) {
-            res.status(400).render("casino", {
-                headTitle: "Game Machines",
+        let title = "Casino";
+        title += casino.name ? " \"" + casino.name + "\"" : "";
+
+        // check if casino has GameMachines
+        if (!casino.GameMachines || casino.GameMachines.length < 1) {
+            return res.status(200).render("casino", {
                 success: false,
+                headTitle: title,
+                pageTitle: title,
                 error: "No game machines were found in the casino!"
             });
         }
 
         res.status(200).render("casino", {
-            headTitle: "Game Machines",
-            pageTitle: "Game Machines",
             success: true,
+            headTitle: title,
+            pageTitle: title,
             casino: casino
         });
 
     } catch(e) {
         res.status(500).render("error", {
-            headTitle: "Game Machines",
+            statusCode: res.statusCode,
+            error: e.message
+        });
+    }
+});
+
+/**
+ * Get all Game Machines in Casino by id
+ */
+router.get("/:casinoId/:machineId", userAuth, async (req, res) => {
+    try {
+        const gMachine = await models.GameMachine.findById(req.params.machineId);
+
+        if (!gMachine || (gMachine.CasinoId && (gMachine.CasinoId != req.params.casinoId))) {
+            return res.status(404).render("error", {
+                statusCode: res.statusCode,
+                headTitle: "Game Machine is not found!",
+                error: "Game Machine is not found!"
+            });
+        }
+
+        let title = "Game Machine";
+        title += gMachine.id ? " № \"" + gMachine.id + "\"" : "";
+
+        if (gMachine.active) {
+            return res.status(200).render("game-machine", {
+                success: false,
+                headTitle: title,
+                pageTitle: title,
+                error: "This machine is active now! Please try another one."
+            });
+        }
+
+        res.status(200).render("game-machine", {
+            success: true,
+            headTitle: title,
+            pageTitle: title,
+            gMachine: gMachine
+        });
+        
+    } catch(e) {
+        res.status(500).render("error", {
             statusCode: res.statusCode,
             error: e.message
         });
