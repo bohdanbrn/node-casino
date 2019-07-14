@@ -17,6 +17,12 @@ const userAuth = async(req, res, next) => {
                 throw new Error("Plese authenticate.");
             }
 
+            req.query.usermoney = parseInt(req.query.usermoney);
+
+            if (req.query.usermoney <= 0) {
+                throw new Error("Money should be more than 0!");
+            }
+
             casinoCookie = {
                 username: req.query.username,
                 usermoney: req.query.usermoney

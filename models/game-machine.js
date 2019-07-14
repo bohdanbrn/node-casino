@@ -91,6 +91,70 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     /**
+     * Play a game
+     * @param {number} gameMoney 
+     * @param {object} user 
+     */
+    GameMachine.prototype.play = async function(gameMoney, user) {
+        const gMachine = this;
+
+        try {
+            if (gameMoney <= 0) {
+                throw new Error("Money should be more than 0!");
+            } else if (gameMoney > user.money) {
+                throw new Error("You do not have enough money for play!");
+            } else if ((gameMoney * 3) > gMachine.money) {
+                const maxRate = Math.floor(gMachine.money / 3);
+                throw new Error(`There is not enough money to play. Maximum rate is ${maxRate}`);
+            }
+        }
+        catch(e) {
+            return {
+                validationError: e.message
+            };
+        }
+        
+        // set GameMachine as active now
+        gMachine.active = true;
+        // add money to GameMachine
+        gMachine.money = parseFloat(gMachine.money) + gameMoney;
+        // remove money from User
+        user.money = parseFloat(user.money) - gameMoney;
+
+        await gMachine.save();
+        await user.save();
+
+        let resultMessage = "";
+        let winningAmount = 0;
+
+        // generate a random 3-digit number for game
+        const randNumb = gMachine.generateGameNumber();
+        // number of identical digits
+        const sameCount = gMachine.checkSameNumbers(randNumb);
+
+        if (sameCount === 1) {
+            resultMessage = "No luck, but you can try again.";
+        } else {
+            winningAmount = gameMoney * sameCount;
+            resultMessage = `Congratulation, you won ${winningAmount} $!`;
+        }
+
+        // set GameMachine as not active now
+        gMachine.active = false;
+        // remove winningAmount from GameMachine
+        gMachine.money -= winningAmount;
+        await gMachine.save();
+
+        // add money for User
+        user.money += winningAmount;
+        await user.save();
+
+        return {
+            resultMessage
+        };
+    };
+
+    /**
      * Generate a random 3-digit number for game
      */
     GameMachine.prototype.generateGameNumber = function() {

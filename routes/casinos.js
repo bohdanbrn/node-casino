@@ -1,6 +1,7 @@
 "use strict";
 
 const userAuth = require("../middleware/user-auth.js");
+const {checkCasinoGameMachine} = require("../middleware/check-game-machine.js");
 const models = require("../models");
 const express = require("express");
 const router = new express.Router();
@@ -15,14 +16,14 @@ router.post("", async (req, res) => {
             name: req.body.name,
         });
 
-        res.status(201).send({
+        return res.status(201).send({
             success: true,
             data: {
                 casino
             }
         });
     } catch(e) {
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             error: e.message
         });
@@ -36,14 +37,15 @@ router.get("", userAuth, async (req, res) => {
     try {
         const casinos = await models.Casino.findAll();
 
-        res.status(200).render("casinos", {
+        return res.status(200).render("casinos", {
             headTitle: "Casinos",
             pageTitle: "Casinos",
-            casinos: casinos
+            casinos: casinos,
+            user: req.user
         });
 
     } catch(e) {
-        res.status(500).render("error", {
+        return res.status(500).render("error", {
             headTitle: "Casinos",
             statusCode: res.statusCode,
             error: e.message
@@ -82,22 +84,22 @@ router.get("/:id", userAuth, async (req, res) => {
         // check if casino has GameMachines
         if (!casino.GameMachines || casino.GameMachines.length < 1) {
             return res.status(200).render("casino", {
-                success: false,
                 headTitle: title,
                 pageTitle: title,
-                error: "No game machines were found in the casino!"
+                error: "No game machines were found in the casino!",
+                user: req.user
             });
         }
 
-        res.status(200).render("casino", {
-            success: true,
+        return res.status(200).render("casino", {
             headTitle: title,
             pageTitle: title,
-            casino: casino
+            casino: casino,
+            user: req.user
         });
 
     } catch(e) {
-        res.status(500).render("error", {
+        return res.status(500).render("error", {
             statusCode: res.statusCode,
             error: e.message
         });
@@ -105,41 +107,66 @@ router.get("/:id", userAuth, async (req, res) => {
 });
 
 /**
- * Get all Game Machines in Casino by id
+ * Get single Game Machine in Casino by id
  */
-router.get("/:casinoId/:machineId", userAuth, async (req, res) => {
+router.get("/:casinoId/:machineId", [userAuth, checkCasinoGameMachine], async (req, res) => {
     try {
-        const gMachine = await models.GameMachine.findById(req.params.machineId);
-
-        if (!gMachine || (gMachine.CasinoId && (gMachine.CasinoId != req.params.casinoId))) {
-            return res.status(404).render("error", {
-                statusCode: res.statusCode,
-                headTitle: "Game Machine is not found!",
-                error: "Game Machine is not found!"
-            });
-        }
-
+        const gMachine = req.gMachine;
+        
         let title = "Game Machine";
-        title += gMachine.id ? " № \"" + gMachine.id + "\"" : "";
+        title += gMachine.id ? " №" + gMachine.id : "";
 
-        if (gMachine.active) {
-            return res.status(200).render("game-machine", {
-                success: false,
-                headTitle: title,
-                pageTitle: title,
-                error: "This machine is active now! Please try another one."
-            });
-        }
-
-        res.status(200).render("game-machine", {
-            success: true,
+        return res.status(200).render("game-machine", {
             headTitle: title,
             pageTitle: title,
-            gMachine: gMachine
+            gMachine: req.gMachine,
+            user: req.user
         });
         
     } catch(e) {
-        res.status(500).render("error", {
+        return res.status(500).render("error", {
+            statusCode: res.statusCode,
+            error: e.message
+        });
+    }
+});
+
+/**
+ * Play a geme on Game Machine
+ */
+router.post("/:casinoId/:machineId", [userAuth, checkCasinoGameMachine], async (req, res) => {
+    try {
+        const gMachine = req.gMachine;
+        const user = req.user;
+
+        const gameMoney = parseFloat(req.body.gameMoney);
+
+        // play a game
+        const gameResult = await gMachine.play(gameMoney, user);
+
+        let title = "Game Machine";
+        title += gMachine.id ? " №" + gMachine.id : "";
+
+        if (gameResult.validationError) {
+            return res.status(200).render("game-machine", {
+                headTitle: title,
+                pageTitle: title,
+                alertMessages: [gameResult.validationError],
+                gMachine: gMachine,
+                user: user
+            });
+        }
+
+        return res.status(200).render("game-machine", {
+            headTitle: title,
+            pageTitle: title,
+            alertMessages: [gameResult.resultMessage],
+            gMachine: gMachine,
+            user: user
+        });
+        
+    } catch(e) {
+        return res.status(500).render("error", {
             statusCode: res.statusCode,
             error: e.message
         });
@@ -159,11 +186,11 @@ router.delete("/:id", async (req, res) => {
 
         const statusCode = result ? 200 : 404;
 
-        res.status(statusCode).send({
+        return res.status(statusCode).send({
             success: result
         });
     } catch(e) {
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             error: e.message
         });
