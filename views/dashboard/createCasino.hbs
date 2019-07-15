@@ -1,0 +1,26 @@
+{{> partials/header }}
+
+<main class="mt-5">
+    <section class="container">
+        <div class="row py-5"></div>
+            <div class="col-md-6 m-auto">
+                <h1 class="text-center mb-3"><i class="fas fa-user-plus"></i> {{pageTitle}}</h1>
+
+                {{> partials/alertMessages}}
+
+                <div class="card card-body">
+                    <form action="/dashboard/casinos" method="POST">
+                        <div class="form-group">
+                            <label for="name">Casino name</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Enter casino name"
+                                value="{{name}}" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+{{> partials/footer }}

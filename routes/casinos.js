@@ -8,29 +8,6 @@ const router = new express.Router();
 
 
 /**
- * Create new Casino
- */
-router.post("", async (req, res) => {
-    try {
-        const casino = await models.Casino.create({
-            name: req.body.name,
-        });
-
-        return res.status(201).send({
-            success: true,
-            data: {
-                casino
-            }
-        });
-    } catch(e) {
-        return res.status(500).send({
-            success: false,
-            error: e.message
-        });
-    }
-});
-
-/**
  * Get all Casinos
  */
 router.get("", userAuth, async (req, res) => {
@@ -170,30 +147,6 @@ router.post("/:casinoId/:machineId", [userAuth, checkCasinoGameMachine], async (
     } catch(e) {
         return res.status(500).render("error", {
             statusCode: res.statusCode,
-            error: e.message
-        });
-    }
-});
-
-/**
- * Delete Casino by id
- */
-router.delete("/:id", async (req, res) => {
-    try {
-        const result = await models.Casino.destroy({
-            where: {
-                id: req.params.id
-            }
-        });
-
-        const statusCode = result ? 200 : 404;
-
-        return res.status(statusCode).send({
-            success: result
-        });
-    } catch(e) {
-        return res.status(500).send({
-            success: false,
             error: e.message
         });
     }

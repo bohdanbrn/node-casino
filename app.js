@@ -16,6 +16,7 @@ const gameMachines = require("./routes/game-machines");
 const casinos = require("./routes/casinos");
 // dashboard
 const dashboardAuth = require("./routes/dashboard/auth");
+const dashboardCasinos = require("./routes/dashboard/casinos");
 
 const app = express();
 
@@ -58,6 +59,7 @@ app.use("/users", users);
 app.use("/game-machines", gameMachines);
 app.use("/casinos", casinos);
 app.use("/dashboard", dashboardAuth);
+app.use("/dashboard/casinos", dashboardCasinos);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

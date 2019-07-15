@@ -1,0 +1,21 @@
+{{> partials/header }}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 p-0 bg-primary vh-100 py-5 d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-10 py-2 text-light text-center">
+                        <h1 class="display-1 mb-0">{{#if statusCode}}{{statusCode}}{{else}}500{{/if}}</h1>
+                        {{#if error}}
+                        <p class="lead mb-3">{{error}}</p>
+                        {{/if}}
+                        <a href="/dashboard" class="text-light">← Back to dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{> partials/footer }}

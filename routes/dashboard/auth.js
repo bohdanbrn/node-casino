@@ -9,7 +9,7 @@ const passport = require("passport");
  * Sign in for User
  */
 router.get("", function(req, res) {
-    res.render("dashboard", {
+    res.render("dashboard/signin", {
         headTitle: "Sign In",
         pageTitle: "Sign In"
     });
@@ -54,7 +54,7 @@ router.get("/logout", function(req, res) {
             console.log(err);
         }
         
-        res.redirect("/");
+        res.redirect("/dashboard");
     });
 });
 
