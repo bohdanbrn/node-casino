@@ -27,8 +27,8 @@ router.post("", adminAuth, async (req, res) => {
         });
 
         return res.status(200).render("dashboard/createCasino", {
-            headTitle: "Casinos",
-            pageTitle: "Casinos",
+            headTitle: "Create Casino",
+            pageTitle: "Create Casino",
             casino: casino,
             alertMessages: ["Casino successfully created."],
             user: req.user

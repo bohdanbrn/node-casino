@@ -11,12 +11,11 @@ const hbs = require("hbs");
 
 // client side
 const auth = require("./routes/auth");
-const users = require("./routes/users");
-const gameMachines = require("./routes/game-machines");
 const casinos = require("./routes/casinos");
 // dashboard
 const dashboardAuth = require("./routes/dashboard/auth");
 const dashboardCasinos = require("./routes/dashboard/casinos");
+const dashboardGameMachines = require("./routes/dashboard/game-machines");
 
 const app = express();
 
@@ -55,11 +54,10 @@ app.use((req, res, next) => {
 
 // set endpoints
 app.use("/", auth);
-app.use("/users", users);
-app.use("/game-machines", gameMachines);
 app.use("/casinos", casinos);
 app.use("/dashboard", dashboardAuth);
 app.use("/dashboard/casinos", dashboardCasinos);
+app.use("/dashboard/game-machines", dashboardGameMachines);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

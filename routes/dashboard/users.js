@@ -1,92 +1,91 @@
 "use strict";
 
-const models = require("../models");
+const adminAuth = require("../../middleware/user-auth.js");
+const models = require("../../models");
 const express = require("express");
 const router = new express.Router();
 
 
 /**
- * Create new GameMachine
+ * Create new User
  */
-router.post("", async (req, res) => {
+router.post("", adminAuth, async (req, res) => {
     try {
-        const gMachine = await models.GameMachine.create({
-            money: req.body.money,
-            active: req.body.active,
-            CasinoId: req.body.CasinoId
+        const user = await models.User.create({
+            name: req.body.name
         });
 
         res.status(201).send({
             success: true,
             data: {
-                gMachine
+                user
             }
         });
     } catch(e) {
         res.status(500).send({
             success: false,
-            error: e.message
+            message: e.message
         });
     }
 });
 
 /**
- * Get all GameMachines
+ * Get all Users
  */
-router.get("", async (req, res) => {
+router.get("", adminAuth, async (req, res) => {
     try {
-        const gMachines = await models.GameMachine.findAll();
+        const users = await models.User.findAll();
 
         res.status(200).send({
             success: true,
             data: {
-                gMachines
+                users
             }
         });
 
     } catch(e) {
         res.status(500).send({
             success: false,
-            error: e.message
+            message: e.message
         });
     }
 });
 
 /**
- * Get GameMachine by id
+ * Get User by id
  */
-router.get("/:id", async (req, res) => {
+router.get("/:id", adminAuth, async (req, res) => {
     try {
-        const gMachine = await models.GameMachine.findById(req.params.id);
+        const user = await models.User.findById(req.params.id);
 
-        if (!gMachine) {
+        if (!user) {
             res.status(404).send({
                 success: false,
-                error: "Game machine is not found!"
+                message: "User is not found!"
             });
         }
 
         res.status(200).send({
             success: true,
             data: {
-                gMachine
+                user
             }
         });
 
     } catch(e) {
         res.status(500).send({
             success: false,
-            error: e.message
+            message: e.message
         });
     }
 });
 
 /**
- * Delete GameMachine by id
+ * Delete User by id
  */
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", adminAuth, async (req, res) => {
     try {
-        const result = await models.GameMachine.destroy({
+        const result = await models.User.destroy({
             where: {
                 id: req.params.id
             }
@@ -100,7 +99,7 @@ router.delete("/:id", async (req, res) => {
     } catch(e) {
         res.status(500).send({
             success: false,
-            error: e.message
+            message: e.message
         });
     }
 });
