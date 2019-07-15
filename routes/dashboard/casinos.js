@@ -1,6 +1,6 @@
 "use strict";
 
-const adminAuth = require("../../middleware/user-auth.js");
+const adminAuth = require("../../middleware/admin-auth.js");
 const models = require("../../models");
 const express = require("express");
 const router = new express.Router();

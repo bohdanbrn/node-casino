@@ -29,47 +29,58 @@ module.exports = function(passport) {
             passwordField: "password",
             passReqToCallback: true // allows us to pass back the entire request to the callback
         },
-        function(req, name, password, done) {
-            // check passwords
-            if (password !== req.body.password2) {
-                req.flash("alertMessages", "Passwords don't match.");
-                return done(null, false, {});
-            }
-
-            const generateHash = function(password) {
-                return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-            };
-
-            User.findOne({
-                where: {
-                    name: name
+        async function(req, name, password, done) {
+            try {
+                // check passwords
+                if (password !== req.body.password2) {
+                    req.flash("alertMessages", "Passwords don't match.");
+                    return done(null, false, {});
                 }
-            }).then(function(user) {
+
+                const generateHash = function(password) {
+                    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+                };
+
+                const user = await User.findOne({
+                    where: {
+                        name: name
+                    }
+                });
+                
                 if (user) {
                     req.flash("alertMessages", "That name is already taken.");
                     return done(null, false, {});
-                } else {
-                    const userPassword = generateHash(password);
-                    const data = {
-                        name: name,
-                        password: userPassword
-                    };
+                }
 
-                    if (req.body.money) {
-                        data.money = req.body.money;
+                const userPassword = generateHash(password);
+                const data = {
+                    name: name,
+                    password: userPassword
+                };
+
+                if (req.body.money) {
+                    data.money = req.body.money;
+                }
+                if (req.body.role) {
+                    data.role = req.body.role;
+                }
+
+                User.create(data).then(function(newUser, created) {
+                    if (!newUser) {
+                        req.flash("alertMessages", "User not registered.");
+                        return done(null, false);
                     }
 
-                    User.create(data).then(function(newUser, created) {
-                        if (!newUser) {
-                            return done(null, false);
-                        }
-
-                        if (newUser) {
-                            return done(null, newUser);
-                        }
-                    });
-                }
-            });
+                    if (newUser) {
+                        req.flash("alertMessages", "User is successfully registered.");
+                        return done(null, newUser);
+                    }
+                });
+            } catch(e) {
+                console.log("Error:", e.message);
+                req.flash("alertMessages", "Something went wrong.");
+                return done(null, false, {});
+            }
         }
 
     ));
@@ -82,18 +93,18 @@ module.exports = function(passport) {
             passwordField: "password",
             passReqToCallback: true // allows us to pass back the entire request to the callback
         },
-        function(req, name, password, done) {
-            const User = models.User;
-    
-            const isValidPassword = function(userpass, password) {
-                return bcrypt.compareSync(password, userpass);
-            };
-    
-            User.findOne({
-                where: {
-                    name: name
-                }
-            }).then(function(user) {
+        async function(req, name, password, done) {
+            try {
+                const isValidPassword = function(userpass, password) {
+                    return bcrypt.compareSync(password, userpass);
+                };
+        
+                const user = await User.findOne({
+                    where: {
+                        name: name
+                    }
+                });
+
                 if (!user) {
                     req.flash("alertMessages", "User does not exist.");
                     return done(null, false, {});
@@ -106,14 +117,13 @@ module.exports = function(passport) {
     
                 const userinfo = user.get();
                 return done(null, userinfo);
-            }).catch(function(err) {
-                console.log("Error:", err.message);
+            } catch(e) {
+                console.log("Error:", e.message);
                 req.flash("alertMessages", "Something went wrong.");
                 return done(null, false, {});
-            });
-    
+            }
         }
-    
+
     ));
 
 };

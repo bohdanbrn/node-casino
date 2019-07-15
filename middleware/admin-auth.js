@@ -1,9 +1,15 @@
 "use strict";
 
-const adminAuth = async(req, res, next) => {
+const adminAuth = async (req, res, next) => {
     if (req.isAuthenticated()) {
-        return next();
+        if (req.user && req.user.role === "admin") {
+            return next();
+        }
+        else if (req.user && req.user.role === "user") {
+            req.flash("alertMessages", "Simple users can't login into dashboard!");
+        }
     }
+    
     res.redirect("/dashboard");
 };
 

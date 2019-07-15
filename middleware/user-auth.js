@@ -2,9 +2,14 @@
 
 const userAuth = async(req, res, next) => {
     if (req.isAuthenticated()) {
-        return next();
+        if (req.user && req.user.role === "user") {
+            return next();
+        }
+        else if (req.user && req.user.role === "admin") {
+            req.flash("alertMessages", "Admins can't play games!");
+        }
     }
-    req.flash("alertMessages", "Please Sign In to play.");
+
     res.redirect("/");
 };
 
