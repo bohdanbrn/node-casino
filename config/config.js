@@ -4,12 +4,10 @@ module.exports = {
         password: "postgres",
         database: "node-casino",
         dialect: "postgres",
-        storage: "./db.development.postgres",
         secret_key: "devSecretKey"
     },
     test: {
         dialect: "postgres",
-        storage: ":memory:",
         secret_key: "testSecretKey"
     },
     production: {
