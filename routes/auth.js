@@ -9,7 +9,7 @@ const passport = require("passport");
  * Sign in for User
  */
 router.get("", function(req, res) {
-    res.render("dashboard", {
+    res.render("signin", {
         headTitle: "Sign In",
         pageTitle: "Sign In"
     });
@@ -20,8 +20,8 @@ router.get("", function(req, res) {
  */
 router.post("", passport.authenticate("local-signin",
     {
-        successRedirect: "/dashboard/casinos",
-        failureRedirect: "/dashboard"
+        successRedirect: "/casinos",
+        failureRedirect: "/"
     }
 ));
 
@@ -29,7 +29,7 @@ router.post("", passport.authenticate("local-signin",
  * Create new User
  */
 router.get("/signup", function(req, res) {
-    res.render("dashboard/signup", {
+    res.render("signup", {
         headTitle: "Sign Up",
         pageTitle: "Sign Up"
     });
@@ -40,8 +40,8 @@ router.get("/signup", function(req, res) {
  */
 router.post("/signup", passport.authenticate("local-signup",
     {
-        successRedirect: "/dashboard",
-        failureRedirect: "/dashboard/signup"
+        successRedirect: "/",
+        failureRedirect: "/signup"
     }
 ));
 

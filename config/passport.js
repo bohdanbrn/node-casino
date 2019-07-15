@@ -1,8 +1,9 @@
-var bcrypt = require("bcrypt-nodejs");
+const bcrypt = require("bcrypt-nodejs");
+const LocalStrategy = require("passport-local").Strategy;
+const models = require("../models");
 
-module.exports = function(passport, user) {
-    var User = user;
-    var LocalStrategy = require("passport-local").Strategy;
+module.exports = function(passport) {
+    const User = models.User;
 
     // serialize
     passport.serializeUser(function(user, done) {
@@ -29,7 +30,14 @@ module.exports = function(passport, user) {
             passReqToCallback: true // allows us to pass back the entire request to the callback
         },
         function(req, name, password, done) {
-            var generateHash = function(password) {
+            // check passwords
+            if (password !== req.body.password2) {
+                return done(null, false, {
+                    alertMessages: ["Passwords don't match"]
+                });
+            }
+
+            const generateHash = function(password) {
                 return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
             };
 
@@ -43,17 +51,15 @@ module.exports = function(passport, user) {
                         message: "That name is already taken"
                     });
                 } else {
-                    var userPassword = generateHash(password);
-                    var data = {
+                    const userPassword = generateHash(password);
+                    const data = {
                         name: name,
-
-                        password: userPassword,
-
-                        firstname: req.body.firstname,
-
-                        lastname: req.body.lastname
-
+                        password: userPassword
                     };
+
+                    if (req.body.money) {
+                        data.money = req.body.money;
+                    }
 
                     User.create(data).then(function(newUser, created) {
                         if (!newUser) {
@@ -79,9 +85,9 @@ module.exports = function(passport, user) {
             passReqToCallback: true // allows us to pass back the entire request to the callback
         },
         function(req, name, password, done) {
-            var User = user;
+            const User = models.User;
     
-            var isValidPassword = function(userpass, password) {
+            const isValidPassword = function(userpass, password) {
                 return bcrypt.compareSync(password, userpass);
             };
     
@@ -92,23 +98,22 @@ module.exports = function(passport, user) {
             }).then(function(user) {
                 if (!user) {
                     return done(null, false, {
-                        message: "Email does not exist"
+                        alertMessages: ["Name does not exist."]
                     });
                 }
     
                 if (!isValidPassword(user.password, password)) {
                     return done(null, false, {
-                        message: "Incorrect password."
+                        alertMessages: ["Incorrect password."]
                     });
-    
                 }
     
-                var userinfo = user.get();
+                const userinfo = user.get();
                 return done(null, userinfo);
             }).catch(function(err) {
                 console.log("Error:", err);
                 return done(null, false, {
-                    message: "Something went wrong with your Signin"
+                    alertMessages: ["Something went wrong with your Signin."]
                 });
             });
     

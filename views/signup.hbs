@@ -7,11 +7,16 @@
         {{> partials/alertMessages}}
 
         <div class="card card-body">
-            <form action="/dashboard/signup" method="POST">
+            <form action="/signup" method="POST">
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" id="name" name="name" class="form-control" placeholder="Enter Name"
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name"
                         value="{{name}}" />
+                </div>
+                <div class="form-group">
+                    <label for="money">Money</label>
+                    <input type="text" id="money" name="money" class="form-control" placeholder="Enter your money"
+                        value="{{money}}" />
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
@@ -27,7 +32,7 @@
                     Register
                 </button>
             </form>
-            <p class="lead mt-4">Have An Account? <a href="/dashboard">Sign In</a></p>
+            <p class="lead mt-4">Have An Account? <a href="/">Sign In</a></p>
         </div>
     </div>
 </div>

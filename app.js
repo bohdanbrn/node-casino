@@ -10,7 +10,7 @@ const expressSession = require("express-session");
 const hbs = require("hbs");
 
 // client side
-const indexRoute = require("./routes/index");
+const auth = require("./routes/auth");
 const users = require("./routes/users");
 const gameMachines = require("./routes/game-machines");
 const casinos = require("./routes/casinos");
@@ -18,6 +18,9 @@ const casinos = require("./routes/casinos");
 const dashboardAuth = require("./routes/dashboard/auth");
 
 const app = express();
+
+// load passport strategies
+require("./config/passport.js")(passport);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -44,7 +47,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // set endpoints
-app.use("/", indexRoute);
+app.use("/", auth);
 app.use("/users", users);
 app.use("/game-machines", gameMachines);
 app.use("/casinos", casinos);

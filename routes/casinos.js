@@ -142,7 +142,7 @@ router.post("/:casinoId/:machineId", [userAuth, checkCasinoGameMachine], async (
         const gameMoney = parseFloat(req.body.gameMoney);
 
         // play a game
-        const gameResult = await gMachine.play(gameMoney, user);
+        const gameResult = await gMachine.play(gameMoney, user.id);
 
         let title = "Game Machine";
         title += gMachine.id ? " №" + gMachine.id : "";
@@ -152,17 +152,19 @@ router.post("/:casinoId/:machineId", [userAuth, checkCasinoGameMachine], async (
                 headTitle: title,
                 pageTitle: title,
                 alertMessages: [gameResult.validationError],
-                gMachine: gMachine,
-                user: user
+                gMachine: gMachine
             });
         }
 
         return res.status(200).render("game-machine", {
             headTitle: title,
             pageTitle: title,
-            alertMessages: [gameResult.resultMessage],
+            alertMessages: [
+                `Your number is ${gameResult.randNumb}`,
+                gameResult.resultMessage,
+            ],
             gMachine: gMachine,
-            user: user
+            user: gameResult.user
         });
         
     } catch(e) {

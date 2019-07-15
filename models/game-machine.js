@@ -93,10 +93,16 @@ module.exports = (sequelize, DataTypes) => {
     /**
      * Play a game
      * @param {number} gameMoney 
-     * @param {object} user 
+     * @param {number} userId 
      */
-    GameMachine.prototype.play = async function(gameMoney, user) {
+    GameMachine.prototype.play = async function(gameMoney, userId) {
         const gMachine = this;
+
+        const user = await sequelize.models.User.findOne({
+            where: {
+                id: userId
+            }
+        });
 
         try {
             if (gameMoney <= 0) {
@@ -136,7 +142,7 @@ module.exports = (sequelize, DataTypes) => {
             resultMessage = "No luck, but you can try again.";
         } else {
             winningAmount = gameMoney * sameCount;
-            resultMessage = `Congratulation, you won ${winningAmount} $!`;
+            resultMessage = `Congratulation, you won ${winningAmount}$!`;
         }
 
         // set GameMachine as not active now
@@ -150,7 +156,9 @@ module.exports = (sequelize, DataTypes) => {
         await user.save();
 
         return {
-            resultMessage
+            resultMessage,
+            randNumb,
+            user
         };
     };
 
