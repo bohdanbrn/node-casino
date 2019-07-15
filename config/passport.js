@@ -32,9 +32,8 @@ module.exports = function(passport) {
         function(req, name, password, done) {
             // check passwords
             if (password !== req.body.password2) {
-                return done(null, false, {
-                    alertMessages: ["Passwords don't match"]
-                });
+                req.flash("alertMessages", "Passwords don't match.");
+                return done(null, false, {});
             }
 
             const generateHash = function(password) {
@@ -47,9 +46,8 @@ module.exports = function(passport) {
                 }
             }).then(function(user) {
                 if (user) {
-                    return done(null, false, {
-                        message: "That name is already taken"
-                    });
+                    req.flash("alertMessages", "That name is already taken.");
+                    return done(null, false, {});
                 } else {
                     const userPassword = generateHash(password);
                     const data = {
@@ -97,24 +95,21 @@ module.exports = function(passport) {
                 }
             }).then(function(user) {
                 if (!user) {
-                    return done(null, false, {
-                        alertMessages: ["Name does not exist."]
-                    });
+                    req.flash("alertMessages", "User does not exist.");
+                    return done(null, false, {});
                 }
     
                 if (!isValidPassword(user.password, password)) {
-                    return done(null, false, {
-                        alertMessages: ["Incorrect password."]
-                    });
+                    req.flash("alertMessages", "Incorrect password.");
+                    return done(null, false, {});
                 }
     
                 const userinfo = user.get();
                 return done(null, userinfo);
             }).catch(function(err) {
-                console.log("Error:", err);
-                return done(null, false, {
-                    alertMessages: ["Something went wrong with your Signin."]
-                });
+                console.log("Error:", err.message);
+                req.flash("alertMessages", "Something went wrong.");
+                return done(null, false, {});
             });
     
         }

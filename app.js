@@ -3,10 +3,10 @@
 const express = require("express");
 const path = require("path");
 const logger = require("morgan");
-const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const expressSession = require("express-session");
+const flash = require("connect-flash");
 const hbs = require("hbs");
 
 // client side
@@ -27,6 +27,8 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
 hbs.registerPartials(path.join(__dirname + "/views"));
 
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -42,9 +44,13 @@ app.use(expressSession({
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
-// TODO (maybe delete)
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+// Connect flash
+app.use(flash());
+// Global Vars
+app.use((req, res, next) => {
+    res.locals.alertMessages = req.flash("alertMessages");
+    next();
+});
 
 // set endpoints
 app.use("/", auth);
@@ -52,7 +58,6 @@ app.use("/users", users);
 app.use("/game-machines", gameMachines);
 app.use("/casinos", casinos);
 app.use("/dashboard", dashboardAuth);
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
